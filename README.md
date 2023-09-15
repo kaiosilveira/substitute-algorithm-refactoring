@@ -1,113 +1,125 @@
-[![Continuous Integration](https://github.com/kaiosilveira/refactoring-catalog-template/actions/workflows/ci.yml/badge.svg)](https://github.com/kaiosilveira/refactoring-catalog-template/actions/workflows/ci.yml)
-
-# Refactoring catalog repository template
-
-This is a quick template to help me get a new refactoring repo going.
-
-## Things to do after creating a repo off of this template
-
-1. Replace `[REPOSITORY_NAME]` by the actual repository name
-
-2. Set the text at the project description in GitHub to
-
-```
-Working example with detailed commit history on the "[REPOSITORY_NAME]" refactoring based on Fowler's "Refactoring" book"
-```
-
-3. Replace the lorem ipsum text sections below with actual text
-
-4. Configure the CI badge:
-
-```
-[![Continous Integration](https://github.com/kaiosilveira/[REPOSITORY_NAME]/actions/workflows/ci.yml/badge.svg)](https://github.com/kaiosilveira/[REPOSITORY_NAME]/actions/workflows/ci.yml)
-```
-
-## Useful commands
-
-- Generate a patch diff and write the result to a file:
-
-```bash
-git log --patch --reverse > data.diff
-```
-
-- Generates the commit history table for the last section, including the correct links
-
-```bash
-yarn template:generate-cmt-table [REPOSITORY_NAME]
-```
-
----
+[![Continuous Integration](https://github.com/kaiosilveira/substitute-algorithm-refactoring/actions/workflows/ci.yml/badge.svg)](https://github.com/kaiosilveira/substitute-algorithm-refactoring/actions/workflows/ci.yml)
 
 ℹ️ _This repository is part of my Refactoring catalog based on Fowler's book with the same title. Please see [kaiosilveira/refactoring](https://github.com/kaiosilveira/refactoring) for more details._
 
-# Refactoring name
+---
 
-**Refactoring introduction and motivation** dolore sunt deserunt proident enim excepteur et cillum duis velit dolor. Aute proident laborum officia velit culpa enim occaecat officia sunt aute labore id anim minim. Eu minim esse eiusmod enim nulla Lorem. Enim velit in minim anim anim ad duis aute ipsum voluptate do nulla. Ad tempor sint dolore et ullamco aute nulla irure sunt commodo nulla aliquip.
+# Substitute Algorithm
+
+<table>
+<thead>
+<th>Before</th>
+<th>After</th>
+</thead>
+<tbody>
+<tr>
+<td>
+
+```javascript
+function foundPerson(people) {
+  for (let i = 0; i < people.length; i++) {
+    if (people[i] === 'Don') {
+      return 'Don';
+    }
+
+    if (people[i] === 'John') {
+      return 'John';
+    }
+
+    if (people[i] === 'Kent') {
+      return 'Kent';
+    }
+  }
+
+  return '';
+}
+```
+
+</td>
+
+<td>
+
+```javascript
+function foundPerson(people) {
+  const candidates = ['Don', 'John', 'Kent'];
+  return people.find(p => candidates.includes(p)) || '';
+}
+```
+
+</td>
+</tr>
+</tbody>
+</table>
+
+Sometimes we try our best to improve a piece of code, but it's not enough. Some other times, we take a look at a piece of logic and identify straightaway an easier, more readable way of implementing it. This refactoring helps us in these cases.
 
 ## Working example
 
-**Working example general explanation** proident reprehenderit mollit non voluptate ea aliquip ad ipsum anim veniam non nostrud. Cupidatat labore occaecat labore veniam incididunt pariatur elit officia. Aute nisi in nulla non dolor ullamco ut dolore do irure sit nulla incididunt enim. Cupidatat aliquip minim culpa enim. Fugiat occaecat qui nostrud nostrud eu exercitation Lorem pariatur fugiat ea consectetur pariatur irure. Officia dolore veniam duis duis eu eiusmod cupidatat laboris duis ad proident adipisicing. Minim veniam consectetur ut deserunt fugiat id incididunt reprehenderit.
-
-**Before**
-
-```javascript
-function functionBeforeBeingRefactored(arg1, arg2) {}
-```
-
-And after going through the refactoring steps detailed in the next section, we have the following code as a result:
-
-**After**
-
-```javascript
-function functionAfterBeingRefactored(...args) {}
-```
-
-**Refactoring considerations and final thoughts** id culpa mollit sit laborum aute dolore sint id nisi. Sunt voluptate in nostrud esse occaecat adipisicing ullamco. Ut nisi quis eu aliquip ut est commodo labore ad aute aliquip.
+Our working example is a `foundPerson` function that's using a suboptimal approach to `if` statements and that's not leveraging the functional aspects of Javascript. Our goal here is to make this function easier to read and potentially shorter.
 
 ### Test suite
 
-Occaecat et incididunt aliquip ex id dolore. Et excepteur et ea aute culpa fugiat consectetur veniam aliqua. Adipisicing amet reprehenderit elit qui.
+A test suite was put in place to make sure that for a given input, the output of the function remains the same. This will be critical in providing us with confidence that we haven't broken anything while performing the rewrite.
 
 ```javascript
-describe('functionBeingRefactored', () => {
-  it('should work', () => {
-    expect(0).toEqual(1);
+describe('foundPerson', () => {
+  it('should return Don if he was found', () => {
+    const people = ['Don', 'Kaio', 'Dan'];
+    expect(foundPerson(people)).toEqual('Don');
+  });
+
+  it('should return John if he was found', () => {
+    const people = ['Kaio', 'John', 'Dan'];
+    expect(foundPerson(people)).toEqual('John');
+  });
+
+  it('should return Kent if he was found', () => {
+    const people = ['Kaio', 'Dan', 'Kent'];
+    expect(foundPerson(people)).toEqual('Kent');
+  });
+
+  it('should return an empty string if none of the expected people were found', () => {
+    const people = ['Kaio', 'Dan', 'Enzo'];
+    expect(foundPerson(people)).toEqual('');
   });
 });
 ```
 
-Magna ut tempor et ut elit culpa id minim Lorem aliqua laboris aliqua dolor. Irure mollit ad in et enim consequat cillum voluptate et amet esse. Fugiat incididunt ea nulla cupidatat magna enim adipisicing consequat aliquip commodo elit et. Mollit aute irure consequat sunt. Dolor consequat elit voluptate aute duis qui eu do veniam laborum elit quis.
-
 ### Steps
 
-**Step 1 description** mollit eu nulla mollit irure sint proident sint ipsum deserunt ad consectetur laborum incididunt aliqua. Officia occaecat deserunt in aute veniam sunt ad fugiat culpa sunt velit nulla. Pariatur anim sit minim sit duis mollit.
+This is one of the shortest refactorings to document: we simply need to rewrite all the logic. Of course, in the real world, some time and / or previous knowledge is required in order to know how to implement certain algorithms in a more idiomatic way. This is often highly dependent on the programming language we're using and the tools, libs and frameworks we have available at the time.
 
 ```diff
-diff --git a/src/price-order/index.js b/src/price-order/index.js
-@@ -3,6 +3,11 @@
--module.exports = old;
-+module.exports = new;
+diff --git a/src/index.js b/src/index.js
+@@ -1,17 +1,4 @@
+ export function foundPerson(people) {
+-  for (let i = 0; i < people.length; i++) {
+-    if (people[i] === 'Don') {
+-      return 'Don';
+-    }
+-
+-    if (people[i] === 'John') {
+-      return 'John';
+-    }
+-
+-    if (people[i] === 'Kent') {
+-      return 'Kent';
+-    }
+-  }
+-
+-  return '';
++  const candidates = ['Don', 'John', 'Kent'];
++  return people.find(p => candidates.includes(p)) || '';
+ }
+
 ```
-
-**Step n description** mollit eu nulla mollit irure sint proident sint ipsum deserunt ad consectetur laborum incididunt aliqua. Officia occaecat deserunt in aute veniam sunt ad fugiat culpa sunt velit nulla. Pariatur anim sit minim sit duis mollit.
-
-```diff
-diff --git a/src/price-order/index.js b/src/price-order/index.js
-@@ -3,6 +3,11 @@
--module.exports = old;
-+module.exports = new;
-```
-
-And that's it!
 
 ### Commit history
 
 Below there's the commit history for the steps detailed above.
 
-| Commit SHA                                                                  | Message                  |
-| --------------------------------------------------------------------------- | ------------------------ |
-| [cmt-sha-1](https://github.com/kaiosilveira/[REPOSITORY_NAME]/commit-SHA-1) | description of commit #1 |
-| [cmt-sha-2](https://github.com/kaiosilveira/[REPOSITORY_NAME]/commit-SHA-2) | description of commit #2 |
-| [cmt-sha-n](https://github.com/kaiosilveira/[REPOSITORY_NAME]/commit-SHA-n) | description of commit #n |
+| Commit SHA                                                                                                                  | Message                              |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [30d67fc](https://github.com/kaiosilveira/substitute-algorithm-refactoring/commit/30d67fc0dca1ba8c987aa7c3416e2a41271edce8) | rewrite `foundPerson` implementation |
 
-For the full commit history for this project, check the [Commit History tab](https://github.com/kaiosilveira/[REPOSITORY_NAME]/commits/main).
+For the full commit history for this project, check the [Commit History tab](https://github.com/kaiosilveira/substitute-algorithm-refactoring/commits/main).
